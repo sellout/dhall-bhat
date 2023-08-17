@@ -4,6 +4,8 @@ Tasty meal of Dhall
 
 We currently require Dhall 1.18.0, and try to support newer releases as much as possible.
 
+Imports are available at https://sellout.github.io/dhall-bhat/ – the paths are identical to the documentation paths, but without the `.html` suffix.
+
 ## Documentation
 
 Types as documentation: https://sellout.github.io/dhall-bhat/
