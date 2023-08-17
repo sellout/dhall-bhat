@@ -1,0 +1,31 @@
+let Applicative = ../../Applicative/Type
+
+let Semigroup = ../../Semigroup/Type
+
+let Either = ../Type
+
+in  λ(a : Type) →
+    λ(semi : Semigroup a) →
+          ../functor a
+        ∧ { pure = λ(b : Type) → (Either a b).Right
+          , ap =
+              λ(b : Type) →
+              λ(c : Type) →
+              λ(g : Either a (b → c)) →
+              λ(fa : Either a b) →
+                merge
+                  { Left =
+                      λ(l : a) →
+                        merge
+                          { Left = λ(ll : a) → (Either a c).Left (semi.op l ll)
+                          , Right = λ(_ : b) → (Either a c).Left l
+                          }
+                          fa
+                  , Right =
+                      let map = (../functor a).map
+
+                      in  λ(f : b → c) → map b c f fa
+                  }
+                  g
+          }
+      : Applicative (Either a)

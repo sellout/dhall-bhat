@@ -1,0 +1,5 @@
+let Functor = ../Functor/Type
+
+let Monad = ./Type
+
+in  λ(f : Type → Type) → λ(t : Monad f) → t.{ map } : Functor f

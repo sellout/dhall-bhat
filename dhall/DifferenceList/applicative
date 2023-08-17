@@ -1,0 +1,7 @@
+let DifferenceList = ./Type
+
+let extractApplicative = ../Monad/extractApplicative
+
+let monad = ./monad
+
+in  extractApplicative DifferenceList monad

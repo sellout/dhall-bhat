@@ -1,11 +1,12 @@
 # dhall-bhat
+
 Tasty meal of Dhall
 
 We currently require Dhall 1.18.0, and try to support newer releases as much as possible.
 
 ## Documentation
 
-Types as documentation: https://formationai.github.io/dhall-bhat/
+Types as documentation: https://sellout.github.io/dhall-bhat/
 
 ## Style
 
@@ -21,23 +22,33 @@ It’s common to define a type and a number of related expressions for it. When 
   - op (some operation defined on this type, lowercase)
   - terms.dhall (file contanining a record of all the terms related to this type)
 
-### use `dhall format`
+### use `dhall format` and `dhall lint`
 
-`make format` in this repo will automatically apply this to the entire repository.
-
-`make lint` implies `format`, but you should only do it when you don’t have work-in-progress (e.g., when you’re about to commit), as it will additionally remove any unused subexpressions.
+In this repo, those are accomplished with `nix fmt`, which additionally formats everything else in here.
 
 **NB**: `dhall format` (and `lint`) currently [removes all comments from the file](https://github.com/dhall-lang/dhall-haskell/issues/145) except for a single “heading” comment. So be careful that you don’t lose important comments this way.
 
 ### don’t repeat names
 
 In Dhall, the name of an expression is given by the file it’s in. Most of us aren’t used to this style, so we have an inclination to provide a name _within_ the file, e.g.
+
 ```dhall
-let  foo = <the real expression>
-in   foo
+let foo = <the real expression>
+in  foo
 ```
 
 But this is a place that becomes easy to get out of sync – if the file is renamed, the name used within the file is no longer accurate, so if you’re looking at the contents and trying to use the expression, it can be confusing that you can’t actually use that name. Instead, just rely on the file name, and let the expression be “bare” within the file.
+
+However, when you have assertions (which double as examples in the docs, you effectively need to bind the primary expression. It looks like
+
+```dhall
+let foo =  <the real expression>
+let example0 = assert : foo 3 ≡ 9
+let example1 = assert : foo 2 ≡ 4
+in  foo
+```
+
+The repetition here is useful because the name ends up in the docs and the expressions are tested.
 
 ### create bindings for imports
 
@@ -48,13 +59,15 @@ It’s often tempting to use imports directly inlined, like `(./Foo/functor).map
 In general, we don’t have explicit types on expressions. Since there is only a single top-level expression per file, it’s relatively easy for editors to display the result of `dhall type` to provide a type annotation on the fly.
 
 The exception to this is type class instances, which end up looking like
+
 ```dhall
-    let Foo = ../Foo/Type
-in  let Bar = ./Type
+let Foo = ../Foo/Type
+let Bar = ./Type
 in  { operation = ...
     , anotherOperation = ...
     } : Foo Bar
 ```
+
 This is because it isn’t enough that they have a valid type, but that type needs to align with the type class definition in order to be applicable where that type class is required.
 
 ### don’t define type class methods in their own files

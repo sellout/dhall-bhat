@@ -1,0 +1,7 @@
+let extractSemigroup = ../Monoid/extractSemigroup
+
+let DifferenceList = ./Type
+
+let monoid = ./monoid
+
+in  λ(a : Type) → extractSemigroup (DifferenceList a) (monoid a)

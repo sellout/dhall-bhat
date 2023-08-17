@@ -1,0 +1,14 @@
+let Functor = ../Functor/Type
+
+let ReaderT = ./Type
+
+let Reader = ../Reader/Type
+
+let ReaderF = ../Reader/functor
+
+let ComposeF = ../Compose/functor
+
+in  λ(r : Type) →
+    λ(m : Type → Type) →
+    λ(functor : Functor m) →
+      ComposeF (Reader r) m (ReaderF r) functor : Functor (ReaderT r m)

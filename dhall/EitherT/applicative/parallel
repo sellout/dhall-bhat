@@ -1,0 +1,18 @@
+let Applicative = ../../Applicative/Type
+
+let Either = ../../Either/Type
+
+let EitherT = ../Type
+
+let EitherA = ../../Either/applicative/parallel
+
+let ComposeA = ../../Compose/applicative
+
+let Semigroup = ../../Semigroup/Type
+
+in  λ(a : Type) →
+    λ(semi : Semigroup a) →
+    λ(m : Type → Type) →
+    λ(applicative : Applicative m) →
+        ComposeA m (Either a) applicative (EitherA a semi)
+      : Applicative (EitherT a m)

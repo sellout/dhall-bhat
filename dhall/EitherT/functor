@@ -1,0 +1,14 @@
+let Functor = ../Functor/Type
+
+let EitherT = ./Type
+
+let Either = ../Either/Type
+
+let EitherF = ../Either/functor
+
+let ComposeF = ../Compose/functor
+
+in  λ(a : Type) →
+    λ(m : Type → Type) →
+    λ(functor : Functor m) →
+      ComposeF m (Either a) functor (EitherF a) : Functor (EitherT a m)

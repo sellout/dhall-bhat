@@ -1,0 +1,16 @@
+let Transformer = ../Transformer/Type
+
+let EitherT = ./Type
+
+let Either = ../Either/Type
+
+let Monad = ../Monad/Type
+
+in  λ(a : Type) →
+        { lift =
+            λ(m : Type → Type) →
+            λ(monad : Monad m) →
+            λ(b : Type) →
+              monad.map b (Either a b) (Either a b).Right
+        }
+      : Transformer (EitherT a)

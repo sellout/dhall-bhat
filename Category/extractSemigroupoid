@@ -1,3 +1,0 @@
-  λ(f : Type → Type → Type)
-→ λ(category : ./Type f)
-→ { compose = category.compose } : ./../Semigroupoid/Type f

@@ -1,9 +1,0 @@
-    let DifferenceList = ./Type
-
-in  let Monoid = ./../Monoid/Type
-
-in  let append = ./append
-
-in  let empty = ./empty
-
-in  λ(a : Type) → { op = append a, unit = empty a } : Monoid (DifferenceList a)

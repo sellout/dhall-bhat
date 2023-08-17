@@ -1,0 +1,14 @@
+let Either = ./Type
+
+in  λ(a : Type) →
+    λ(b : Type) →
+    λ(c : Type) →
+    λ(d : Type) →
+    λ(f : a → c) →
+    λ(g : b → d) →
+    λ(e : Either a b) →
+      merge
+        { Left = λ(x : a) → (Either c d).Left (f x)
+        , Right = λ(y : b) → (Either c d).Right (g y)
+        }
+        e

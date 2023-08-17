@@ -1,0 +1,15 @@
+let P =
+      https://prelude.dhall-lang.org/v20.1.0/package.dhall
+        sha256:26b0ef498663d269e4dc6a82b0ee289ec565d683ef4c00d0ebdd25333a5a3c98
+
+let Foldable = ../Foldable/Type
+
+in    { fold =
+          λ(a : Type) →
+          λ(ts : Optional a) →
+          λ(b : Type) →
+          λ(f : a → b → b) →
+          λ(z : b) →
+            P.Optional.fold a ts b (λ(x : a) → f x z) z
+      }
+    : Foldable Optional

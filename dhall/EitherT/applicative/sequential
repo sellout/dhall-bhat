@@ -1,0 +1,14 @@
+let Applicative = ../../Applicative/Type
+
+let Either = ../../Either/Type
+
+let EitherT = ../Type
+
+let EitherA = ../../Either/applicative/sequential
+
+let ComposeA = ../../Compose/applicative
+
+in  λ(a : Type) →
+    λ(m : Type → Type) →
+    λ(applicative : Applicative m) →
+      ComposeA m (Either a) applicative (EitherA a) : Applicative (EitherT a m)

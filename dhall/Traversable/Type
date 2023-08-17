@@ -1,0 +1,19 @@
+let Functor = ../Functor/Type
+
+let Foldable = ../Foldable/Type
+
+let Applicative = ../Applicative/Type
+
+let Traversable =
+      λ(t : Type → Type) →
+        { traverse :
+            ∀(f : Type → Type) →
+            ∀(applicative : Applicative f) →
+            ∀(a : Type) →
+            ∀(b : Type) →
+            (a → f b) →
+            t a →
+              f (t b)
+        }
+
+in  λ(t : Type → Type) → Foldable t ⩓ Functor t ⩓ Traversable t

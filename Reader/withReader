@@ -1,1 +1,0 @@
-λ(r : Type) → ./../ReaderT/withReader r ./../Identity/Type
