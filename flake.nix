@@ -68,12 +68,14 @@
             indent_size = null;
           };
         };
-        ## subsumes dhall (format)
-        ## TODO: Add an option like `programs.dhall.lint = true;` to treefmt-nix
-        settings.formatter.dhall-lint = {
-          command = pkgs.dhall;
-          includes = ["dhall/*"];
-          options = ["lint"];
+        settings.formatter = {
+          ## subsumes dhall (format)
+          ## TODO: Add an option like `programs.dhall.lint = true;` to treefmt-nix
+          dhall-lint = {
+            command = pkgs.dhall;
+            includes = ["dhall/*"];
+            options = ["lint"];
+          };
         };
       };
     in {

@@ -69,3 +69,8 @@ branches:
       allow_force_pushes: false
       restrictions:
         apps: []
+
+pages:
+  build_type: "workflow"
+  source:
+    branch: "master"
