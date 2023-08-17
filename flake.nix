@@ -72,18 +72,7 @@
         ## TODO: Add an option like `programs.dhall.lint = true;` to treefmt-nix
         settings.formatter.dhall-lint = {
           command = pkgs.dhall;
-          excludes = [
-            "**/.*"
-            "*.json"
-            "*.md"
-            "*.yaml"
-            "LICENSE"
-            "Makefile"
-            "docs/*"
-            "flake.*"
-            "scripts/*"
-          ];
-          includes = ["**/*"];
+          includes = ["dhall/*"];
           options = ["lint"];
         };
       };
@@ -94,7 +83,7 @@
         "${pname}" =
           inputs.bash-strict-mode.lib.checkedDrv pkgs
           (pkgs.dhallPackages.buildDhallDirectoryPackage {
-            inherit src;
+            src = "${src}/dhall";
             name = pname;
             dependencies = [pkgs.dhallPackages.Prelude];
             document = true;
