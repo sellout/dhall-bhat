@@ -96,13 +96,7 @@
           (pkgs.dhallPackages.buildDhallDirectoryPackage {
             inherit src;
             name = pname;
-            dependencies = [
-              (pkgs.dhallPackages.buildDhallUrl {
-                url = "https://prelude.dhall-lang.org/Optional/fold";
-                hash = "sha256-xbnXL29ivaoOGWrBx0LMF1zWenF7iA+4rsEzOlpBMs8=";
-                dhallHash = "sha256:c5b9d72f6f62bdaa0e196ac1c742cc175cd67a717b880fb8aec1333a5a4132cf";
-              })
-            ];
+            dependencies = [pkgs.dhallPackages.Prelude];
             document = true;
           });
       };

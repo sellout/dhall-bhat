@@ -1,6 +1,6 @@
-let Optional/fold =
-      https://prelude.dhall-lang.org/Optional/fold.dhall
-        sha256:c5b9d72f6f62bdaa0e196ac1c742cc175cd67a717b880fb8aec1333a5a4132cf
+let P =
+      https://prelude.dhall-lang.org/v20.1.0/package.dhall
+        sha256:26b0ef498663d269e4dc6a82b0ee289ec565d683ef4c00d0ebdd25333a5a3c98
 
 let Traversable = ../Traversable/Type
 
@@ -15,7 +15,7 @@ in      ./foldable
             λ(b : Type) →
             λ(g : a → f b) →
             λ(ts : Optional a) →
-              Optional/fold
+              P.Optional.fold
                 a
                 ts
                 (f (Optional b))
