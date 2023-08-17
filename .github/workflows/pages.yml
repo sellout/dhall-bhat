@@ -37,7 +37,7 @@ jobs:
       - uses: lriesebos/nix-develop-command@v1
         with:
           command: |
-            dhall-docs --input ./dhall
+            dhall-docs --input ./dhall --package-name "dhall-bhat"
             ## We copy here to fix the permissions from the Nix symlinks
             cp -r ./docs ./_site
             chmod --recursive +rwx ./_site
