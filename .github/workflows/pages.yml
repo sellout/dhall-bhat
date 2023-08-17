@@ -40,6 +40,7 @@ jobs:
             dhall-docs --input ./dhall
             ## We copy here to fix the permissions from the Nix symlinks
             cp -r ./docs ./_site
+            chmod --recursive +rwx ./_site
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v2
   deploy:
