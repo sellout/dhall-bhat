@@ -61,6 +61,10 @@
         ## FIXME: All the non-dhall config here should be inherited from flaky.
         programs = {
           alejandra.enable = true;
+          dhall = {
+            enable = true;
+            lint = true;
+          };
           prettier.enable = true;
           shellcheck.enable = true;
           shfmt = {
@@ -68,15 +72,7 @@
             indent_size = null;
           };
         };
-        settings.formatter = {
-          ## subsumes dhall (format)
-          ## TODO: Add an option like `programs.dhall.lint = true;` to treefmt-nix
-          dhall-lint = {
-            command = pkgs.dhall;
-            includes = ["dhall/*"];
-            options = ["lint"];
-          };
-        };
+        settings.formatter.dhall.includes = ["dhall/*"];
       };
     in {
       packages = {
@@ -96,7 +92,11 @@
         inputs.flaky.lib.devShells.default
         pkgs
         inputs.self
-        [pkgs.dhall pkgs.dhall-docs]
+        [
+          pkgs.dhall
+          pkgs.dhall-docs
+          pkgs.dhall-lsp-server
+        ]
         "";
 
       checks.format = format.check inputs.self;
