@@ -75,6 +75,17 @@
         settings.formatter.dhall.includes = ["dhall/*"];
       };
     in {
+      apps = {
+        dhall-to-json = {
+          program = "${pkgs.dhall-json}/bin/dhall-to-json";
+          type = "app";
+        };
+        dhall-to-yaml = {
+          program = "${pkgs.dhall-json}/bin/dhall-to-yaml";
+          type = "app";
+        };
+      };
+
       packages = {
         default = inputs.self.packages.${system}.${pname};
 
@@ -96,8 +107,11 @@
           pkgs.dhall
           pkgs.dhall-docs
           pkgs.dhall-lsp-server
+          pkgs.just
         ]
-        "";
+        ''
+          just update-generated-files
+        '';
 
       checks.format = format.check inputs.self;
 

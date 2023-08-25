@@ -3,3 +3,6 @@
 # Nix build
 /result
 /source
+
+# generated files
+/.config/mustache.yaml
