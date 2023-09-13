@@ -4,11 +4,11 @@
 repository:
   name: dhall-bhat
   description: Tasty meal of Dhall
-  # homepage: https://example.github.io/
-  # topics: development, nix-flakes, nix-templates
+  homepage: https://sellout.github.io/dhall-bhat
+  topics: dhall, library
   private: false
   has_issues: true
-  has_projects: false
+  has_projects: true
   has_wiki: true
   has_downloads: false
   default_branch: main
