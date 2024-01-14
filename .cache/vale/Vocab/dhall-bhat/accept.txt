@@ -1,0 +1,9 @@
+direnv
+garnix
+[Nn]ix
+Pfeil
+ShellCheck
+Bhat
+Dhall
+inline
+SHA

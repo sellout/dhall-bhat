@@ -8,5 +8,5 @@
       summary: "Tasty meal of Dhall",
       version: "0.1.0",
     },
-  type: { name: "nix" },
+  type: { name: "dhall" },
 }
