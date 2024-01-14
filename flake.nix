@@ -16,70 +16,78 @@
     ];
     ## Isolate the build.
     registries = false;
-    sandbox = true;
+    sandbox = "relaxed";
   };
 
-  outputs = inputs: let
+  outputs = {
+    bash-strict-mode,
+    flake-utils,
+    flaky,
+    nixpkgs,
+    self,
+  }: let
     pname = "dhall-bhat";
+
+    supportedSystems =
+      nixpkgs.lib.remove
+      ## NB: cborg-0.2.9.0, needed by Dhall, doesn’t compile on i686-linux.
+      flake-utils.lib.system.i686-linux
+      flaky.lib.defaultSystems;
   in
     {
+      schemas = {
+        inherit
+          (flaky.schemas)
+          overlays
+          homeConfigurations
+          packages
+          devShells
+          projectConfigurations
+          checks
+          formatter
+          ;
+      };
+
       overlays = {
         default = final: prev: {
           dhallPackages = prev.dhallPackages.override (old: {
             overrides =
               final.lib.composeExtensions
               (old.overrides or (_: _: {}))
-              (inputs.self.overlays.dhall final prev);
+              (self.overlays.dhall final prev);
           });
         };
 
         dhall = final: prev: dfinal: dprev: {
-          ${pname} = inputs.self.packages.${final.system}.${pname};
+          ${pname} = self.packages.${final.system}.${pname};
         };
       };
 
       homeConfigurations =
         builtins.listToAttrs
         (builtins.map
-          (inputs.flaky.lib.homeConfigurations.example
+          (flaky.lib.homeConfigurations.example
             pname
-            inputs.self
+            self
             [
               ({pkgs, ...}: {
                 ## TODO: Is there something more like `dhallWithPackages`?
                 home.packages = [pkgs.dhallPackages.${pname}];
               })
             ])
-          inputs.flake-utils.lib.defaultSystems);
+          supportedSystems);
     }
-    // inputs.flake-utils.lib.eachDefaultSystem (system: let
-      pkgs = import inputs.nixpkgs {inherit system;};
+    // flake-utils.lib.eachSystem supportedSystems (system: let
+      pkgs = import nixpkgs {inherit system;};
 
       src = pkgs.lib.cleanSource ./.;
-
-      format = inputs.flaky.lib.format pkgs {
-        ## FIXME: All the non-dhall config here should be inherited from flaky.
-        programs = {
-          alejandra.enable = true;
-          dhall = {
-            enable = true;
-            lint = true;
-          };
-          prettier.enable = true;
-          shellcheck.enable = true;
-          shfmt = {
-            enable = true;
-            indent_size = null;
-          };
-        };
-        settings.formatter.dhall.includes = ["dhall/*"];
-      };
     in {
       packages = {
-        default = inputs.self.packages.${system}.${pname};
+        default = self.packages.${system}.${pname};
 
         "${pname}" =
-          inputs.bash-strict-mode.lib.checkedDrv pkgs
+          bash-strict-mode.lib.checkedDrv
+          pkgs
           (pkgs.dhallPackages.buildDhallDirectoryPackage {
             src = "${src}/dhall";
             name = pname;
@@ -88,32 +96,37 @@
           });
       };
 
-      devShells.default =
-        inputs.flaky.lib.devShells.default
-        pkgs
-        inputs.self
-        [
-          pkgs.dhall
-          pkgs.dhall-docs
-          pkgs.dhall-lsp-server
-        ]
-        "";
+      projectConfigurations =
+        flaky.lib.projectConfigurations.default {inherit pkgs self;};
 
-      checks.format = format.check inputs.self;
-
-      formatter = format.wrapper;
+      devShells =
+        self.projectConfigurations.${system}.devShells
+        // {default = flaky.lib.devShells.default system self [] "";};
+      checks = self.projectConfigurations.${system}.checks;
+      formatter = self.projectConfigurations.${system}.formatter;
     });
 
   inputs = {
     bash-strict-mode = {
-      inputs.nixpkgs.follows = "nixpkgs";
+      inputs = {
+        flake-utils.follows = "flake-utils";
+        flaky.follows = "flaky";
+        nixpkgs.follows = "nixpkgs";
+      };
       url = "github:sellout/bash-strict-mode";
     };
 
     flake-utils.url = "github:numtide/flake-utils";
 
-    flaky.url = "github:sellout/flaky";
+    flaky = {
+      inputs = {
+        bash-strict-mode.follows = "bash-strict-mode";
+        flake-utils.follows = "flake-utils";
+        nixpkgs.follows = "nixpkgs";
+      };
+      url = "github:sellout/flaky";
+    };
 
-    nixpkgs.url = "github:NixOS/nixpkgs/release-23.05";
+    nixpkgs.url = "github:NixOS/nixpkgs/release-23.11";
   };
 }
