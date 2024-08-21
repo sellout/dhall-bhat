@@ -66,15 +66,9 @@
       homeConfigurations =
         builtins.listToAttrs
         (builtins.map
-          (flaky.lib.homeConfigurations.example
-            pname
-            self
-            [
-              ({pkgs, ...}: {
-                ## TODO: Is there something more like `dhallWithPackages`?
-                home.packages = [pkgs.dhallPackages.${pname}];
-              })
-            ])
+          (flaky.lib.homeConfigurations.example self
+            ## TODO: Is there something more like `dhallWithPackages`?
+            [({pkgs, ...}: {home.packages = [pkgs.dhallPackages.${pname}];})])
           supportedSystems);
     }
     // flake-utils.lib.eachSystem supportedSystems (system: let
@@ -96,8 +90,9 @@
           });
       };
 
-      projectConfigurations =
-        flaky.lib.projectConfigurations.default {inherit pkgs self;};
+      projectConfigurations = flaky.lib.projectConfigurations.default {
+        inherit pkgs self supportedSystems;
+      };
 
       devShells =
         self.projectConfigurations.${system}.devShells
@@ -107,26 +102,11 @@
     });
 
   inputs = {
-    bash-strict-mode = {
-      inputs = {
-        flake-utils.follows = "flake-utils";
-        flaky.follows = "flaky";
-        nixpkgs.follows = "nixpkgs";
-      };
-      url = "github:sellout/bash-strict-mode";
-    };
+    ## Flaky should generally be the source of truth for its inputs.
+    flaky.url = "github:sellout/flaky";
 
-    flake-utils.url = "github:numtide/flake-utils";
-
-    flaky = {
-      inputs = {
-        bash-strict-mode.follows = "bash-strict-mode";
-        flake-utils.follows = "flake-utils";
-        nixpkgs.follows = "nixpkgs";
-      };
-      url = "github:sellout/flaky";
-    };
-
-    nixpkgs.url = "github:NixOS/nixpkgs/release-23.11";
+    bash-strict-mode.follows = "flaky/bash-strict-mode";
+    flake-utils.follows = "flaky/flake-utils";
+    nixpkgs.follows = "flaky/nixpkgs";
   };
 }
