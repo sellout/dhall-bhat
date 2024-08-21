@@ -1,4 +1,11 @@
-{config, flaky, lib, pkgs, ...}: {
+{
+  config,
+  flaky,
+  lib,
+  pkgs,
+  supportedSystems,
+  ...
+}: {
   project = {
     name = "dhall-bhat";
     summary = "Tasty meal of Dhall";
@@ -52,23 +59,23 @@
   ## CI
   services.garnix = {
     enable = true;
-    builds.exclude = [
-      # TODO: Remove once garnix-io/garnix#285 is fixed.
-      "homeConfigurations.x86_64-darwin-${config.project.name}-example"
-    ];
+    ## TODO: Remove once garnix-io/garnix#285 is fixed.
+    builds.exclude = ["homeConfigurations.x86_64-darwin-example"];
   };
   ## FIXME: Shouldn’t need `mkForce` here (or to duplicate the base contexts).
   ##        Need to improve module merging.
   services.github.settings.branches.main.protection.required_status_checks.contexts =
     lib.mkForce
-      (lib.concatMap flaky.lib.garnixChecks [
-        (sys: "homeConfig ${sys}-${config.project.name}-example")
-        (sys: "package default [${sys}]")
-        (sys: "package ${config.project.name} [${sys}]")
-        ## FIXME: These are duplicated from the base config
-        (sys: "check formatter [${sys}]")
-        (sys: "devShell default [${sys}]")
-      ]);
+    (flaky.lib.forGarnixSystems supportedSystems (sys: [
+      "homeConfig ${sys}-${config.project.name}-example"
+      "package default [${sys}]"
+      "package ${config.project.name} [${sys}]"
+      ## FIXME: These are duplicated from the base config
+      "check formatter [${sys}]"
+      "check project-manager-files [${sys}]"
+      "check vale [${sys}]"
+      "devShell default [${sys}]"
+    ]));
 
   ## publishing
   imports = [./github-pages.nix];
