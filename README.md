@@ -1,6 +1,6 @@
 # Dhall Bhat
 
-[![built with garnix](https://img.shields.io/endpoint?url=https%3A%2F%2Fgarnix.io%2Fapi%2Fbadges%2Fsellout%2Fdhall-bhat)](https://garnix.io)
+[![built with garnix](https://img.shields.io/endpoint?url=https%3A%2F%2Fgarnix.io%2Fapi%2Fbadges%2Fsellout%2Fdhall-bhat)](https://garnix.io/repo/sellout/dhall-bhat)
 
 Tasty meal of Dhall
 

@@ -1,9 +1,10 @@
 direnv
+formatter
 garnix
 [Nn]ix
 Pfeil
 ShellCheck
 Bhat
+inlined
+SHAs
 Dhall
-inline
-SHA

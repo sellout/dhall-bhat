@@ -15,16 +15,16 @@
       "dhall.cachix.org-1:8laGciue2JBwD49ICFtg+cIF8ddDaW7OFBjDb/dHEAo="
     ];
     ## Isolate the build.
-    registries = false;
     sandbox = "relaxed";
+    use-registries = false;
   };
 
   outputs = {
-    bash-strict-mode,
     flake-utils,
     flaky,
     nixpkgs,
     self,
+    systems,
   }: let
     pname = "dhall-bhat";
 
@@ -32,7 +32,7 @@
       nixpkgs.lib.remove
       ## NB: cborg-0.2.9.0, needed by Dhall, doesn’t compile on i686-linux.
       flake-utils.lib.system.i686-linux
-      flaky.lib.defaultSystems;
+      (import systems);
   in
     {
       schemas = {
@@ -72,27 +72,25 @@
           supportedSystems);
     }
     // flake-utils.lib.eachSystem supportedSystems (system: let
-      pkgs = import nixpkgs {inherit system;};
+      pkgs = nixpkgs.legacyPackages.${system}.appendOverlays [
+        flaky.overlays.default
+      ];
 
       src = pkgs.lib.cleanSource ./.;
     in {
       packages = {
         default = self.packages.${system}.${pname};
 
-        "${pname}" =
-          bash-strict-mode.lib.checkedDrv
-          pkgs
-          (pkgs.dhallPackages.buildDhallDirectoryPackage {
-            src = "${src}/dhall";
-            name = pname;
-            dependencies = [pkgs.dhallPackages.Prelude];
-            document = true;
-          });
+        "${pname}" = pkgs.checkedDrv (pkgs.dhallPackages.buildDhallDirectoryPackage {
+          src = "${src}/dhall";
+          name = pname;
+          dependencies = [pkgs.dhallPackages.Prelude];
+          document = true;
+        });
       };
 
-      projectConfigurations = flaky.lib.projectConfigurations.default {
-        inherit pkgs self supportedSystems;
-      };
+      projectConfigurations =
+        flaky.lib.projectConfigurations.dhall {inherit pkgs self supportedSystems;};
 
       devShells =
         self.projectConfigurations.${system}.devShells
@@ -105,8 +103,8 @@
     ## Flaky should generally be the source of truth for its inputs.
     flaky.url = "github:sellout/flaky";
 
-    bash-strict-mode.follows = "flaky/bash-strict-mode";
     flake-utils.follows = "flaky/flake-utils";
     nixpkgs.follows = "flaky/nixpkgs";
+    systems.follows = "flaky/systems";
   };
 }
