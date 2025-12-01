@@ -2,17 +2,22 @@
   description = "Tasty meal of Dhall";
 
   nixConfig = {
+    ## NB: This is a consequence of using `self.pkgsLib.runEmptyCommand`, which
+    ##     allows us to sandbox derivations that otherwise can’t be.
+    allow-import-from-derivation = true;
     ## https://github.com/NixOS/rfcs/blob/master/rfcs/0045-deprecate-url-syntax.md
     extra-experimental-features = ["no-url-literals"];
     extra-substituters = [
       "https://cache.dhall-lang.org"
       "https://cache.garnix.io"
       "https://dhall.cachix.org"
+      "https://sellout.cachix.org"
     ];
     extra-trusted-public-keys = [
       "cache.dhall-lang.org:I9/H18WHd60olG5GsIjolp7CtepSgJmM2CsO813VTmM="
       "cache.garnix.io:CTFPyKSLcx5RMJKfLo5EEPUObbA78b0YQ2DTCJXqr9g="
       "dhall.cachix.org-1:8laGciue2JBwD49ICFtg+cIF8ddDaW7OFBjDb/dHEAo="
+      "sellout.cachix.org-1:v37cTpWBEycnYxSPAgSQ57Wiqd3wjljni2aC0Xry1DE="
     ];
     ## Isolate the build.
     sandbox = "relaxed";
@@ -28,11 +33,7 @@
   }: let
     pname = "dhall-bhat";
 
-    supportedSystems =
-      nixpkgs.lib.remove
-      ## NB: cborg-0.2.9.0, needed by Dhall, doesn’t compile on i686-linux.
-      flake-utils.lib.system.i686-linux
-      (import systems);
+    supportedSystems = import systems;
   in
     {
       schemas = {
@@ -90,7 +91,7 @@
       };
 
       projectConfigurations =
-        flaky.lib.projectConfigurations.dhall {inherit pkgs self supportedSystems;};
+        flaky.lib.projectConfigurations.dhall {inherit pkgs self;};
 
       devShells =
         self.projectConfigurations.${system}.devShells

@@ -1,6 +1,8 @@
 # Dhall Bhat
 
 [![built with garnix](https://img.shields.io/endpoint?url=https%3A%2F%2Fgarnix.io%2Fapi%2Fbadges%2Fsellout%2Fdhall-bhat)](https://garnix.io/repo/sellout/dhall-bhat)
+[![Nix CI](https://nix-ci.com/badge/gh:sellout:dhall-bhat)](https://nix-ci.com/gh:sellout:dhall-bhat)
+[![Project Manager](https://img.shields.io/badge/%20-Project%20Manager-%235277C3?logo=nixos&labelColor=%23cccccc)](https://sellout.github.io/project-manager/)
 
 Tasty meal of Dhall
 
